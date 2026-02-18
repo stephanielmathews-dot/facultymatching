@@ -51,10 +51,15 @@
         .faculty-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 30px; }
 
         .faculty-card {
-            background: var(--white); border-radius: 8px; overflow: hidden;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05); cursor: pointer;
-            border: 1px solid #eee; display: flex; flex-direction: column; transition: 0.3s;
-        }
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.6s ease, padding 0.6s ease, opacity 0.4s ease;
+    background: #fafafa;
+    padding: 0 20px;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    opacity: 0;
+}
 
         .faculty-card:hover { box-shadow: 0 8px 15px rgba(0,0,0,0.1); }
 
