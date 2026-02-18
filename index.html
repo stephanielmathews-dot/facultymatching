@@ -3,142 +3,212 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Faculty Research Profiles</title>
+    <title>NCSU Faculty Research Directory</title>
     <style>
         :root {
-            #cc0000; /* NC State Red */
-            --dark: #222;
-            --light: #f4f4f4;
+            --ncsu-red: #cc0000;
+            --dark-grey: #424242;
+            --light-bg: #f9f9f9;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'UniversRoman', Helvetica, Arial, sans-serif;
             margin: 0;
             padding: 20px;
-            background-color: var(--light);
+            background-color: var(--light-bg);
+            color: #333;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
         }
 
         h1 {
-            text-align: center;
-            color: var(--primary);
+            color: var(--ncsu-red);
+            font-size: 2.5rem;
+            margin-bottom: 10px;
         }
 
         /* Filter Section */
-        .filter-container {
+        .filter-section {
+            max-width: 1100px;
+            margin: 0 auto 40px auto;
             text-align: center;
-            margin-bottom: 30px;
-            padding: 15px;
             background: white;
+            padding: 20px;
             border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .filter-title {
+            font-weight: bold;
+            margin-bottom: 15px;
+            display: block;
+            color: var(--dark-grey);
+        }
+
+        .filter-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
         }
 
         .filter-link {
-            display: inline-block;
-            margin: 5px;
-            padding: 8px 15px;
-            background-color: #eee;
-            color: var(--dark);
-            text-decoration: none;
-            border-radius: 20px;
-            font-size: 0.9em;
+            padding: 6px 12px;
+            background: #f0f0f0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            color: #555;
             cursor: pointer;
-            transition: 0.3s;
+            text-decoration: none;
+            transition: all 0.2s ease;
         }
 
         .filter-link:hover, .filter-link.active {
-            background-color: var(--primary);
+            background-color: var(--ncsu-red);
             color: white;
+            border-color: var(--ncsu-red);
         }
 
         /* Faculty Grid */
         .faculty-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px;
+            gap: 25px;
             max-width: 1200px;
             margin: 0 auto;
         }
 
-        /* Faculty Card */
         .faculty-card {
             background: white;
-            border-radius: 10px;
+            border-bottom: 4px solid #ddd;
+            border-radius: 4px;
             overflow: hidden;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
             cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            position: relative;
+            display: flex;
+            flex-direction: column;
         }
 
         .faculty-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            border-bottom-color: var(--ncsu-red);
         }
 
         .faculty-photo {
             width: 100%;
-            height: 250px;
+            height: 280px;
             object-fit: cover;
+            filter: grayscale(20%);
         }
 
         .faculty-info {
-            padding: 15px;
+            padding: 20px;
         }
 
         .faculty-name {
-            font-size: 1.2em;
-            font-weight: bold;
-            margin: 0;
-            color: var(--primary);
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin: 0 0 10px 0;
+            color: #000;
         }
 
         .faculty-keywords {
-            font-size: 0.85em;
-            color: #666;
-            margin-top: 8px;
-            font-style: italic;
+            font-size: 0.8rem;
+            color: #cc0000;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: bold;
         }
 
-        /* Expandable Description */
-        .description-overlay {
-            display: none; /* Hidden by default */
-            padding: 15px;
+        /* Expandable Area */
+        .faculty-description {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out, padding 0.4s ease;
             background: #fff;
-            border-top: 1px solid #eee;
-            font-size: 0.95em;
-            line-height: 1.5;
+            padding: 0 20px;
+            font-size: 0.95rem;
+            line-height: 1.6;
             color: #444;
         }
 
-        .faculty-card.expanded .description-overlay {
-            display: block;
+        .faculty-card.expanded .faculty-description {
+            max-height: 500px; /* Large enough to fit content */
+            padding: 10px 20px 25px 20px;
+            border-top: 1px solid #eee;
         }
 
-        /* Utility Class for Filtering */
-        .hidden {
-            display: none;
-        }
+        .hidden { display: none; }
     </style>
 </head>
 <body>
 
+<header>
     <h1>Faculty Research Profiles</h1>
+    <p>Department of Biological Sciences</p>
+</header>
 
-    <div class="filter-container" id="filter-buttons">
-        <a class="filter-link active" data-filter="all">Cell Biology</a>
+<div class="filter-section">
+    <span class="filter-title">Filter by Research Area:</span>
+    <div class="filter-container" id="filters">
+        <a class="filter-link active" data-filter="all">All</a>
+        <a class="filter-link" data-filter="Organismal Biology">Organismal Biology</a>
+        <a class="filter-link" data-filter="Skeletal Biology">Skeletal Biology</a>
+        <a class="filter-link" data-filter="Paleontology">Paleontology</a>
+        <a class="filter-link" data-filter="Anatomy">Anatomy</a>
+        <a class="filter-link" data-filter="creative thinking">Creative Thinking</a>
+        <a class="filter-link" data-filter="Benchmarking">Benchmarking</a>
+        <a class="filter-link" data-filter="Mentoring">Mentoring</a>
+        <a class="filter-link" data-filter="AI">AI</a>
+        <a class="filter-link" data-filter="Neuroscience">Neuroscience</a>
         <a class="filter-link" data-filter="Genetics">Genetics</a>
+        <a class="filter-link" data-filter="Behavior">Behavior</a>
+        <a class="filter-link" data-filter="Zebrafish">Zebrafish</a>
+        <a class="filter-link" data-filter="Microscopy">Microscopy</a>
+        <a class="filter-link" data-filter="Neurodegeneration">Neurodegeneration</a>
+        <a class="filter-link" data-filter="disease modeling">Disease Modeling</a>
+        <a class="filter-link" data-filter="Evolution">Evolution</a>
+        <a class="filter-link" data-filter="Genomics">Genomics</a>
+        <a class="filter-link" data-filter="Sex Determination">Sex Determination</a>
+        <a class="filter-link" data-filter="Sex Differences">Sex Differences</a>
+        <a class="filter-link" data-filter="Complex Traits">Complex Traits</a>
+        <a class="filter-link" data-filter="Science Communication">Science Communication</a>
         <a class="filter-link" data-filter="Microbiology">Microbiology</a>
-        <a class="filter-link" data-filter="Toxicology">Toxicology</a>
-        <a class="filter-link" data-filter="Ecology">Ecology</a>
-        <a class="filter-link" data-filter="Cell Biology">Cell Biology</a>
-        <a class="filter-link active" data-filter="all">Anatomy</a>
-        <a class="filter-link active" data-filter="all">Evolutionary Biology</a>
+        <a class="filter-link" data-filter="Education Research">Education Research</a>
+        <a class="filter-link" data-filter="Bacteriophage">Bacteriophage</a>
+        <a class="filter-link" data-filter="Antimicrobial Resistance">Antimicrobial Resistance</a>
+    </div>
+</div>
+
+<div class="faculty-grid" id="facultyGrid">
+
+    <div class="faculty-card" data-tags="Paleontology, Evolution, Organismal Biology">
+        <img src="https://images.unsplash.com/photo-1527066236128-2ff79f7b9705?w=400" class="faculty-photo" alt="Lindsay Zanno">
+        <div class="faculty-info">
+            <h3 class="faculty-name">Dr. Lindsay Zanno</h3>
+            <p class="faculty-keywords">Paleontology, Evolution, Organismal Biology</p>
+        </div>
+        <div class="faculty-description">
+            Dr. Zanno is a world-renowned paleontologist focusing on the evolution of theropod dinosaurs. Her work involves extensive field research and organismal biology to reconstruct ancient ecosystems.
+        </div>
     </div>
 
-    <div class="faculty-grid" id="faculty-list">
-        
-        <div class="faculty-card" data-keywords="Anatomy, Evolutionary Biology">
+    <div class="faculty-card" data-tags="Neuroscience, Behavior, Zebrafish, Neurodegeneration">
+        <img src="https://images.unsplash.com/photo-1559839734-2b71ce87dbee?w=400" class="faculty-photo" alt="Kurt Marsden">
+        <div class="faculty-info">
+            <h3 class="faculty-name">Dr. Kurt Marsden</h3>
+            <p class="faculty-keywords">Neuroscience, Behavior, Zebrafish</p>
+        </div>
+        <div class="faculty-description">
+            The Marsden Lab uses zebrafish to study the genetic and environmental factors that influence behavior and neurodegeneration. His research utilizes advanced microscopy and disease modeling.
+        </div>
+    </div>
+
+<div class="faculty-card" data-keywords="Anatomy, Evolutionary Biology">
             <img src="images/AHR.jpg" alt="Dr. Adam Hartstone Rose" class="faculty-photo">
             <div class="faculty-info">
                 <p class="faculty-name">Dr. Adam Heartstone Rose</p>
@@ -149,88 +219,74 @@
 
             </div>
         </div>
-
-        <div class="faculty-card" data-keywords="Toxicology, Genetics">
-            <img src="https://images.unsplash.com/photo-1559839734-2b71ce87dbee?w=400" alt="Dr. Antonio Planchart" class="faculty-photo">
-            <div class="faculty-info">
-                <p class="faculty-name">Dr. Antonio Planchart</p>
-                <p class="faculty-keywords">Keywords: Toxicology, Genetics</p>
-            </div>
-            <div class="description-overlay">
-                Research involves understanding how environmental stressors interact with the genome during early development to influence health and disease in later life.
-            </div>
+    <div class="faculty-card" data-tags="Microbiology, Education Research, creative thinking, Mentoring">
+        <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400" class="faculty-photo" alt="Carlos Goller">
+        <div class="faculty-info">
+            <h3 class="faculty-name">Dr. Carlos Goller</h3>
+            <p class="faculty-keywords">Microbiology, Education Research, Mentoring</p>
         </div>
-
-        <div class="faculty-card" data-keywords="Microbiology, Ecology">
-            <img src="https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=400" alt="Dr. José M. Bruno-Bárcena" class="faculty-photo">
-            <div class="faculty-info">
-                <p class="faculty-name">Dr. José M. Bruno-Bárcena</p>
-                <p class="faculty-keywords">Keywords: Microbiology, Ecology</p>
-            </div>
-            <div class="description-overlay">
-                Specializes in microbial physiology and fermentation. His work explores the beneficial uses of microorganisms in industrial and ecological applications.
-            </div>
+        <div class="faculty-description">
+            Dr. Goller focuses on microbiology education and the use of creative thinking and mentoring to improve undergraduate research experiences and digital literacy.
         </div>
-
-        <div class="faculty-card" data-keywords="Ecology, Genetics">
-            <img src="https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=400" alt="Dr. Martha Burford Reiskind" class="faculty-photo">
-            <div class="faculty-info">
-                <p class="faculty-name">Dr. Martha Burford Reiskind</p>
-                <p class="faculty-keywords">Keywords: Ecology, Genetics</p>
-            </div>
-            <div class="description-overlay">
-                Investigates evolutionary ecology and how populations adapt to rapidly changing environments, particularly in aquatic systems.
-            </div>
-        </div>
-
-        <div class="faculty-card" data-keywords="Toxicology, Cell Biology">
-            <img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=400" alt="Dr. Yoshiaki Tsuji" class="faculty-photo">
-            <div class="faculty-info">
-                <p class="faculty-name">Dr. Yoshiaki Tsuji</p>
-                <p class="faculty-keywords">Keywords: Toxicology, Cell Biology</p>
-            </div>
-            <div class="description-overlay">
-                Studies the cellular response to oxidative stress and heavy metal toxicity, focusing on iron metabolism and gene expression regulation.
-            </div>
-        </div>
-
     </div>
 
-    <script>
-        // 1. Expand/Collapse Functionality
-        const cards = document.querySelectorAll('.faculty-card');
-        cards.forEach(card => {
-            card.addEventListener('click', () => {
-                // Toggle the 'expanded' class on the clicked card
-                card.classList.toggle('expanded');
+    <div class="faculty-card" data-tags="Genetics, Complex Traits, disease modeling, Genomics">
+        <img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=400" class="faculty-photo" alt="David Aylor">
+        <div class="faculty-info">
+            <h3 class="faculty-name">Dr. David Aylor</h3>
+            <p class="faculty-keywords">Genetics, Complex Traits, Genomics</p>
+        </div>
+        <div class="faculty-description">
+            Research focuses on the genetics of complex traits using mouse models. His work incorporates genomics and disease modeling to understand how variation leads to different health outcomes.
+        </div>
+    </div>
+
+    <div class="faculty-card" data-tags="Behavior, Evolution, Science Communication, Microscopy">
+        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400" class="faculty-photo" alt="Adrian Smith">
+        <div class="faculty-info">
+            <h3 class="faculty-name">Dr. Adrian Smith</h3>
+            <p class="faculty-keywords">Behavior, Evolution, SciComm</p>
+        </div>
+        <div class="faculty-description">
+            Head of the Evolutionary Biology & Behavior Research Lab, Dr. Smith is famous for his high-speed microscopy and innovative Science Communication via digital platforms.
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // Filtering Logic
+    const filterLinks = document.querySelectorAll('.filter-link');
+    const cards = document.querySelectorAll('.faculty-card');
+
+    filterLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            
+            // UI Update
+            filterLinks.forEach(l => l.classList.remove('active'));
+            link.classList.add('active');
+
+            const filter = link.getAttribute('data-filter').toLowerCase();
+
+            cards.forEach(card => {
+                const tags = card.getAttribute('data-tags').toLowerCase();
+                if (filter === 'all' || tags.includes(filter)) {
+                    card.classList.remove('hidden');
+                } else {
+                    card.classList.add('hidden');
+                }
             });
         });
+    });
 
-        // 2. Filter Functionality
-        const filterLinks = document.querySelectorAll('.filter-link');
-        const facultyCards = document.querySelectorAll('.faculty-card');
-
-        filterLinks.forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                
-                // Update active link styling
-                filterLinks.forEach(l => l.classList.remove('active'));
-                link.classList.add('active');
-
-                const filterValue = link.getAttribute('data-filter');
-
-                facultyCards.forEach(card => {
-                    const keywords = card.getAttribute('data-keywords');
-                    
-                    if (filterValue === 'all' || keywords.includes(filterValue)) {
-                        card.classList.remove('hidden');
-                    } else {
-                        card.classList.add('hidden');
-                    }
-                });
-            });
+    // Expand/Collapse Logic
+    cards.forEach(card => {
+        card.addEventListener('click', () => {
+            card.classList.toggle('expanded');
         });
-    </script>
+    });
+</script>
+
 </body>
 </html>
