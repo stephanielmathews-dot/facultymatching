@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NCSU Faculty Research Directory</title>
+    <style>
+        :root {
+            --ncsu-red: #cc0000;
+            --dark: #222;
+            --light: #f4f4f4;
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: 'UniversRoman', Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: var(--light);
+            color: var(--dark);
+        }
+
+        /* Layout containers */
+        #directory-view, #detail-view { max-width: 1200px; margin: 0 auto; }
+        #detail-view { display: none; background: white; padding: 40px; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { color: var(--ncsu-red); margin-bottom: 5px; }
+
+        /* Filter Section */
+        .filter-section {
+            background: var(--white);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .filter-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+
+        .filter-link {
+            padding: 5px 12px; background: #f0f0f0; border-radius: 4px;
+            font-size: 0.8rem; color: #555; cursor: pointer; text-decoration: none;
+            transition: 0.2s; border: 1px solid #ddd;
+        }
+
+        .filter-link:hover, .filter-link.active { background-color: var(--ncsu-red); color: white; border-color: var(--ncsu-red); }
+
+        /* Faculty Grid */
+        .faculty-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 30px; }
+
+        .faculty-card {
+            background: var(--white); border-radius: 8px; overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05); cursor: pointer;
+            border: 1px solid #eee; display: flex; flex-direction: column; transition: 0.3s;
+        }
+
+        .faculty-card:hover { box-shadow: 0 8px 15px rgba(0,0,0,0.1); }
+
+        .faculty-photo { width: 100%; height: 320px; object-fit: cover; object-position: top; }
+
+        .faculty-info { padding: 20px; background: #fff; }
+
+        .faculty-name { font-size: 1.4rem; font-weight: bold; margin: 0 0 10px 0; color: #000; }
+
+        .faculty-keywords { font-size: 0.85rem; color: var(--ncsu-red); font-weight: 600; text-transform: capitalize; }
+
+        /* Expansion Logic */
+        .faculty-description-preview {
+            max-height: 0; overflow: hidden; transition: max-height 0.5s ease;
+            background: #fafafa; padding: 0 20px; font-size: 0.95rem; line-height: 1.6;
+        }
+
+        .faculty-card.expanded .faculty-description-preview { max-height: 500px; padding: 15px 20px; border-top: 1px solid #eee; }
+
+        /* Buttons */
+        .btn-more {
+            display: inline-block; margin-top: 15px; padding: 8px 16px;
+            background-color: var(--ncsu-red); color: white; border: none;
+            border-radius: 4px; cursor: pointer; font-weight: bold; text-align: center;
+        }
+
+        .btn-back {
+            background: #444; color: white; padding: 10px 20px; border: none;
+            border-radius: 4px; cursor: pointer; margin-bottom: 20px;
+        }
+
+        .hidden { display: none; }
+
+        /* Detail View Styles */
+        .detail-header { display: flex; gap: 30px; margin-bottom: 30px; align-items: flex-start; }
+        .detail-photo { width: 250px; border-radius: 8px; }
+        .detail-content h2 { color: var(--ncsu-red); margin-top: 25px; border-bottom: 2px solid #eee; padding-bottom: 5px; }
+        .detail-content p, .detail-content li { line-height: 1.7; }
+    </style>
+</head>
+<body>
+
+<div id="directory-view">
+    <header>
+        <h1>Biological Sciences Faculty Research</h1>
+        <p>Click a keyword to filter or a card to expand. Click "More Information" for full lab details.</p>
+    </header>
+
+    <div class="filter-section">
+        <div class="filter-container" id="filters">
+            <a class="filter-link active" data-filter="all">All</a>
+            <a class="filter-link" data-filter="neuroscience">Neuroscience</a>
+            <a class="filter-link" data-filter="genetics">Genetics</a>
+            <a class="filter-link" data-filter="behavior">Behavior</a>
+            <a class="filter-link" data-filter="zebrafish">Zebrafish</a>
+            <a class="filter-link" data-filter="microscopy">Microscopy</a>
+            <a class="filter-link" data-filter="neurodegeneration">Neurodegeneration</a>
+            <a class="filter-link" data-filter="disease modeling">Disease Modeling</a>
+            <a class="filter-link" data-filter="organismal biology">Organismal Biology</a>
+            <a class="filter-link" data-filter="skeletal biology">Skeletal Biology</a>
+            <a class="filter-link" data-filter="paleontology">Paleontology</a>
+            <a class="filter-link" data-filter="anatomy">Anatomy</a>
+            <a class="filter-link" data-filter="evolution">Evolution</a>
+            <a class="filter-link" data-filter="creative thinking">Creative Thinking</a>
+            <a class="filter-link" data-filter="benchmarking">Benchmarking</a>
+            <a class="filter-link" data-filter="mentoring">Mentoring</a>
+            <a class="filter-link" data-filter="ai">AI</a>
+            <a class="filter-link" data-filter="genomics">Genomics</a>
+            <a class="filter-link" data-filter="sex determination">Sex Determination</a>
+            <a class="filter-link" data-filter="sex differences">Sex Differences</a>
+            <a class="filter-link" data-filter="complex traits">Complex Traits</a>
+            <a class="filter-link" data-filter="science communication">Science Communication</a>
+            <a class="filter-link" data-filter="microbiology">Microbiology</a>
+            <a class="filter-link" data-filter="education research">Education Research</a>
+            <a class="filter-link" data-filter="bacteriophage">Bacteriophage</a>
+            <a class="filter-link" data-filter="antimicrobial resistance">Antimicrobial Resistance</a>
+        </div>
+    </div>
+
+    <div class="faculty-grid" id="facultyGrid">
+        <div class="faculty-card" data-id="marsden" data-tags="neuroscience, genetics, behavior, zebrafish, microscopy, neurodegeneration, disease modeling">
+            <img src="images/KR.jpg" class="faculty-photo">
+            <div class="faculty-info">
+                <h3 class="faculty-name">Kurt Marsden</h3>
+                <p class="faculty-keywords">Neuroscience, Genetics, Zebrafish</p>
+                <div class="faculty-description-preview">
+                    In the Marsden lab we aim to better understand the processes underlying neurological disease...
+                    <button class="btn-more" onclick="showDetails('marsden')">More Information</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="faculty-card" data-id="rose" data-tags="organismal biology, skeletal biology, paleontology, anatomy, evolution">
+            <img src="images/AHR.jpg" class="faculty-photo">
+            <div class="faculty-info">
+                <h3 class="faculty-name">Adam Hartstone-Rose</h3>
+                <p class="faculty-keywords">Anatomy, Paleontology, Evolution</p>
+                <div class="faculty-description-preview">
+                    Studying anatomical adaptation predominantly to dietary and locomotive specialization in mammals...
+                    <button class="btn-more" onclick="showDetails('rose')">More Information</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="faculty-card" data-id="kosal" data-tags="creative thinking, benchmarking, mentoring, ai">
+            <img src="images/EK.jpg" class="faculty-photo">
+            <div class="faculty-info">
+                <h3 class="faculty-name">Erica Kosal</h3>
+                <p class="faculty-keywords">Creative Thinking, Mentoring, AI</p>
+                <div class="faculty-description-preview">
+                    Focusing on how students develop creative thinking skills and the influence of AI in the classroom...
+                    <button class="btn-more" onclick="showDetails('kosal')">More Information</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="faculty-card" data-id="roberts" data-tags="evolution, genetics, genomics, organismal biology, sex determination, sex differences, complex traits, science communication">
+            <img src="images/RR.jpg" class="faculty-photo">
+            <div class="faculty-info">
+                <h3 class="faculty-name">Reade Roberts</h3>
+                <p class="faculty-keywords">Genetics, Evolution, Genomics</p>
+                <div class="faculty-description-preview">
+                    Examining the genetics basis of adaptation and speciation with a focus on African cichlid fish...
+                    <button class="btn-more" onclick="showDetails('roberts')">More Information</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="faculty-card" data-id="mathews" data-tags="microbiology, education research, bacteriophage, antimicrobial resistance">
+            <img src="images/SLM.png" class="faculty-photo">
+            <div class="faculty-info">
+                <h3 class="faculty-name">Stephanie Mathews</h3>
+                <p class="faculty-keywords">Microbiology, Bacteriophage, AMR</p>
+                <div class="faculty-description-preview">
+                    Focusing on microbial discovery and microbiology education to support student learning...
+                    <button class="btn-more" onclick="showDetails('mathews')">More Information</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="detail-view">
+    <button class="btn-back" onclick="hideDetails()">← Back to Directory</button>
+    <div id="detail-content" class="detail-content">
+        </div>
+</div>
+
+<script>
+    const facultyData = {
+        marsden: {
+            name: "Kurt Marsden",
+            img: "https://bio.sciences.ncsu.edu/wp-content/uploads/sites/12/2017/08/Kurt_Marsden.jpg",
+            research: "In the Marsden lab we aim to better understand the processes underlying neurological disease by uncovering genetic and environmental factors that impact the development of neural circuits and behavior. Using zebrafish as our model system, we take a variety of experimental approaches including CRISPR-mediated genome editing, gene expression analysis, high-throughput behavioral testing, 3- and 4-D analysis of neural circuits, simultaneous imaging of neuronal activity and behavior, and optogenetic techniques. Current projects include studies of auditory and visual processing, epilepsy, CHARGE syndrome, and links between cyanobateria exposures and neurodegeneration.",
+            website: "https://marsdenlab.wordpress.ncsu.edu/",
+            expectations: ["Attend weekly lab meetings", "Minimum 10 hours per week", "Complete all required lab safety training", "Maintain a well-organized and updated digital lab notebook", "Present a poster at on-campus or regional symposia"],
+            requirements: ["Minimum of two semesters committed to working in the lab (more is better)", "Must be willing to do animal research with live zebrafish", "Must be committed to doing menial and sometimes messy tasks (feeding fish, making solutions, cleaning, etc.) to build up the skills and responsibility to take on more challenging projects"],
+            compensation: "Credit, Paid, Volunteer. Lab members typically start by doing research for credit or volunteering, then upon discussion with the PI they may transition to a paid position through PEP, FWS, or as lab funds are available."
+        },
+        rose: {
+            name: "Adam Hartstone-Rose",
+            img: "https://bio.sciences.ncsu.edu/wp-content/uploads/sites/12/2019/01/Hartstone-Rose_Adam.jpg",
+            research: "In our lab, we study anatomical adaptation predominantly to dietary and locomotive specialization in mammals, especially primates and carnivores. We analyze live animal behavior, muscle fiber architecture, and the shape of bones and teeth often in an effort to deduce the abilities (e.g., diets) of extinct species from their fossil remains. In addition to our anatomical research, we receive funding for projects focused on the effects of participation in STEM activities on students' interest in STEM professions.",
+            website: "https://sites.google.com/ncsu.edu/hartstone-rose-lab/home",
+            expectations: ["Attend the mandatory weekly lab meeting", "At least 5-10 hours of work per week", "Some work on skeletal preparation and muscle architecture data collection", "Some work on collaborative research data collection and writing", "Complete mandatory lab-related training", "Work within a hierarchical and/or peer driven research team"],
+            requirements: ["Must have at least two semesters to dedicate to the lab (3+ is preferable)", "Freshmen and Sophomores are encouraged to apply", "Must be interested in learning to do publishable comparative anatomy and functional morphology research.", "Must be willing to do gross work (anatomical dissection and skeletal preparation)"],
+            compensation: "Volunteer, Paid (PEP, FWS, etc.), Credit. Explanation: Lab members usually start as volunteers (and/or for credit) and the most eager and available are subsequently hired for lab leadership roles."
+        },
+        kosal: {
+            name: "Erica Kosal",
+            img: "https://bio.sciences.ncsu.edu/wp-content/uploads/sites/12/2017/08/Kosal_Erica.jpg",
+            research: "Dr. Kosal is interested in how students develop their creative thinking skills. She is also interested in how testing influences student mastery of material and explores whether benchmarking on exams influences learning. In the classroom, Dr. Kosal has developed several AI activities and is exploring how these influence student learning. Dr. Kosal also studies how mentoring influences student identity and success in college.",
+            website: "https://bio.sciences.ncsu.edu/people/efkosal/",
+            websiteLabel: "Erica Kosal, PhD Profile",
+            expectations: ["Positive attitude and professional mindset", "Reliability with appointments and meetings", "Good effort to produce high-quality work", "Work independently as well as collaboratively in groups", "Commit to 7-10 hours per week"],
+            requirements: ["No formal course requirements", "Preferred: Having taken (or currently in) a course with Dr. Kosal"],
+            compensation: "Learning Assistant Positions in the classroom are paid; some Research Positions are paid. Please email Dr. Kosal with interest and a statement of intent."
+        },
+        roberts: {
+            name: "Reade Roberts",
+            img: "https://bio.sciences.ncsu.edu/wp-content/uploads/sites/12/2017/08/Roberts_Reade.jpg",
+            research: "Research in the Roberts Laboratory examines the genetics basis of adaptation and speciation, with focus on sex determination and sex differences, and their interaction with complex traits such as dietary adaptation and behavior. Our main model system is the natural adaptive radiation of East African cichlid fish species from Lake Malawi. While our basic biology work is largely guided by evolutionary questions, it holds promise to broadly impact our understanding of vertebrate molecular genetics.",
+            website: "https://readerobertslab.weebly.com/",
+            expectations: ["Interest in organismal biology, evolution, and genetics", "Ability to spend at least two semesters in the lab", "Motivation/availability for at least 5 hours per week", "Attendance of a weekly, one-hour lab meeting", "Eventual presentation of research project"],
+            requirements: ["Willingness to support and perform non-invasive animal research", "Training and compliance with safety/animal care protocols", "Work as part of a team fostering a welcoming lab culture", "Support for facility tasks (feeding animals, cleaning tanks)"],
+            compensation: "Hourly pay via Provost Excellence Program (limited) or Federal Work Study. Course credit via independent research courses. Volunteering also possible."
+        },
+        mathews: {
+            name: "Stephanie Mathews",
+            img: "https://biotech.ncsu.edu/wp-content/uploads/sites/11/2023/07/Mathews_Stephanie.jpg",
+            research: "Dr. Mathews focuses on two main research categories: Microbial Discovery (Antimicrobial resistance/phage discovery) and Microbiology Education (Understanding impact of teaching practices and student scientific identity).",
+            website: "https://biotech.ncsu.edu/people/sklambet/",
+            expectations: ["Commitment of at least 9 hours per week", "Discovery projects involve bench and computer work", "Education projects require CITI certification and qualitative research methods learning"],
+            requirements: ["Microbial Discovery: Students who have taken MB360, MB/BIT 210 or MB211 preferred", "Microbiology Education: Students who have taken MB251 preferred"],
+            compensation: "Credit, Volunteer."
+        }
+    };
+
+    function showDetails(id) {
+        const d = facultyData[id];
+        let content = `
+            <div class="detail-header">
+                <img src="${d.img}" class="detail-photo">
+                <div>
+                    <h1>${d.name}</h1>
+                    <p><strong>Website:</strong> <a href="${d.website}" target="_blank">${d.websiteLabel || d.website}</a></p>
+                </div>
+            </div>
+            <h2>About our Research</h2>
+            <p>${d.research}</p>
+            <h2>Expectations</h2>
+            <ul>${d.expectations.map(e => `<li>${e}</li>`).join('')}</ul>
+            <h2>Requirements</h2>
+            <ul>${d.requirements.map(r => `<li>${r}</li>`).join('')}</ul>
+            <h2>Compensation & Opportunities</h2>
+            <p>${d.compensation}</p>
+        `;
+        document.getElementById('detail-content').innerHTML = content;
+        document.getElementById('directory-view').style.display = 'none';
+        document.getElementById('detail-view').style.display = 'block';
+        window.scrollTo(0,0);
+    }
+
+    function hideDetails() {
+        document.getElementById('detail-view').style.display = 'none';
+        document.getElementById('directory-view').style.display = 'block';
+    }
+
+    const filterLinks = document.querySelectorAll('.filter-link');
+    const cards = document.querySelectorAll('.faculty-card');
+
+    filterLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            filterLinks.forEach(l => l.classList.remove('active'));
+            link.classList.add('active');
+            const filter = link.getAttribute('data-filter').toLowerCase();
+            cards.forEach(card => {
+                const tags = card.getAttribute('data-tags').toLowerCase();
+                if (filter === 'all' || tags.includes(filter)) card.classList.remove('hidden');
+                else card.classList.add('hidden');
+            });
+        });
+    });
+
+    cards.forEach(card => {
+        card.addEventListener('click', (e) => {
+            if (e.target.tagName !== 'BUTTON') card.classList.toggle('expanded');
+        });
+    });
+</script>
+
+</body>
+</html>
+</script>
+
+</body>
+</html>
