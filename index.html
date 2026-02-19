@@ -67,6 +67,18 @@
 
         .faculty-keywords { font-size: 0.85rem; color: var(--ncsu-red); font-weight: 600; text-transform: capitalize; }
 
+        /* FIX: Adjusted expansion to show full text */
+        .faculty-description-preview {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.6s ease, padding 0.6s ease, opacity 0.4s ease;
+            background: #fafafa;
+            padding: 0 20px;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            opacity: 0;
+        }
+       
         /* Allow height to be large enough for any description */
         .faculty-card.expanded .faculty-description-preview {
             max-height: 2000px; 
