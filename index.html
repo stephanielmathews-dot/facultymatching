@@ -50,16 +50,12 @@
         /* Faculty Grid */
         .faculty-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 30px; }
 
-        .faculty-card {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.6s ease, padding 0.6s ease, opacity 0.4s ease;
-    background: #fafafa;
-    padding: 0 20px;
-    font-size: 0.95rem;
-    line-height: 1.6;
-    opacity: 0;
-}
+           .faculty-card {
+            background: var(--white); border-radius: 8px; overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05); cursor: pointer;
+            border: 1px solid #eee; display: flex; flex-direction: column; transition: 0.3s;
+        }
+
 
         .faculty-card:hover { box-shadow: 0 8px 15px rgba(0,0,0,0.1); }
 
@@ -71,20 +67,34 @@
 
         .faculty-keywords { font-size: 0.85rem; color: var(--ncsu-red); font-weight: 600; text-transform: capitalize; }
 
-        /* Expansion Logic */
+        /* FIX: Adjusted expansion to show full text */
         .faculty-description-preview {
-            max-height: 0; overflow: hidden; transition: max-height 0.5s ease;
-            background: #fafafa; padding: 0 20px; font-size: 0.95rem; line-height: 1.6;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.6s ease, padding 0.6s ease, opacity 0.4s ease;
+            background: #fafafa;
+            padding: 0 20px;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            opacity: 0;
         }
 
-        .faculty-card.expanded .faculty-description-preview { max-height: 500px; padding: 15px 20px; border-top: 1px solid #eee; }
+        /* Allow height to be large enough for any description */
+        .faculty-card.expanded .faculty-description-preview {
+            max-height: 2000px; 
+            padding: 20px;
+            border-top: 1px solid #eee;
+            opacity: 1;
+        }
 
-        /* Buttons */
         .btn-more {
-            display: inline-block; margin-top: 15px; padding: 8px 16px;
+            display: inline-block; margin-top: 15px; padding: 10px 18px;
             background-color: var(--ncsu-red); color: white; border: none;
             border-radius: 4px; cursor: pointer; font-weight: bold; text-align: center;
+            width: 100%;
         }
+
+        .btn-more:hover { background-color: #990000; }
 
         .btn-back {
             background: #444; color: white; padding: 10px 20px; border: none;
@@ -93,11 +103,11 @@
 
         .hidden { display: none; }
 
-        /* Detail View Styles */
         .detail-header { display: flex; gap: 30px; margin-bottom: 30px; align-items: flex-start; }
         .detail-photo { width: 250px; border-radius: 8px; }
         .detail-content h2 { color: var(--ncsu-red); margin-top: 25px; border-bottom: 2px solid #eee; padding-bottom: 5px; }
         .detail-content p, .detail-content li { line-height: 1.7; }
+        .detail-content ul { padding-left: 20px; }
     </style>
 </head>
 <body>
@@ -105,8 +115,9 @@
 <div id="directory-view">
     <header>
         <h1>Biological Sciences Faculty Research</h1>
-        <p>Click a keyword to filter or a card to expand. Click "More Information" for full lab details.</p>
+        <p>Click a card to read the full research description or filter by keyword below.</p>
     </header>
+
 
     <div class="filter-section">
         <div class="filter-container" id="filters">
@@ -141,7 +152,7 @@
 
     <div class="faculty-grid" id="facultyGrid">
         <div class="faculty-card" data-id="marsden" data-tags="neuroscience, genetics, behavior, zebrafish, microscopy, neurodegeneration, disease modeling">
-            <img src="images/KR.jpg" class="faculty-photo">
+            <img src="images/KM.jpg" class="faculty-photo">
             <div class="faculty-info">
                 <h3 class="faculty-name">Kurt Marsden</h3>
                 <p class="faculty-keywords">Neuroscience, Genetics, Zebrafish</p>
@@ -212,7 +223,7 @@
     const facultyData = {
         marsden: {
             name: "Kurt Marsden",
-            img: "https://bio.sciences.ncsu.edu/wp-content/uploads/sites/12/2017/08/Kurt_Marsden.jpg",
+            img: "images/KR.jpg",
             research: "In the Marsden lab we aim to better understand the processes underlying neurological disease by uncovering genetic and environmental factors that impact the development of neural circuits and behavior. Using zebrafish as our model system, we take a variety of experimental approaches including CRISPR-mediated genome editing, gene expression analysis, high-throughput behavioral testing, 3- and 4-D analysis of neural circuits, simultaneous imaging of neuronal activity and behavior, and optogenetic techniques. Current projects include studies of auditory and visual processing, epilepsy, CHARGE syndrome, and links between cyanobateria exposures and neurodegeneration.",
             website: "https://marsdenlab.wordpress.ncsu.edu/",
             expectations: ["Attend weekly lab meetings", "Minimum 10 hours per week", "Complete all required lab safety training", "Maintain a well-organized and updated digital lab notebook", "Present a poster at on-campus or regional symposia"],
@@ -221,7 +232,7 @@
         },
         rose: {
             name: "Adam Hartstone-Rose",
-            img: "https://bio.sciences.ncsu.edu/wp-content/uploads/sites/12/2019/01/Hartstone-Rose_Adam.jpg",
+            img: "images/AHR.jpg",
             research: "In our lab, we study anatomical adaptation predominantly to dietary and locomotive specialization in mammals, especially primates and carnivores. We analyze live animal behavior, muscle fiber architecture, and the shape of bones and teeth often in an effort to deduce the abilities (e.g., diets) of extinct species from their fossil remains. In addition to our anatomical research, we receive funding for projects focused on the effects of participation in STEM activities on students' interest in STEM professions.",
             website: "https://sites.google.com/ncsu.edu/hartstone-rose-lab/home",
             expectations: ["Attend the mandatory weekly lab meeting", "At least 5-10 hours of work per week", "Some work on skeletal preparation and muscle architecture data collection", "Some work on collaborative research data collection and writing", "Complete mandatory lab-related training", "Work within a hierarchical and/or peer driven research team"],
@@ -230,7 +241,7 @@
         },
         kosal: {
             name: "Erica Kosal",
-            img: "https://bio.sciences.ncsu.edu/wp-content/uploads/sites/12/2017/08/Kosal_Erica.jpg",
+            img: "images/EK.jpg",
             research: "Dr. Kosal is interested in how students develop their creative thinking skills. She is also interested in how testing influences student mastery of material and explores whether benchmarking on exams influences learning. In the classroom, Dr. Kosal has developed several AI activities and is exploring how these influence student learning. Dr. Kosal also studies how mentoring influences student identity and success in college.",
             website: "https://bio.sciences.ncsu.edu/people/efkosal/",
             websiteLabel: "Erica Kosal, PhD Profile",
@@ -240,7 +251,7 @@
         },
         roberts: {
             name: "Reade Roberts",
-            img: "https://bio.sciences.ncsu.edu/wp-content/uploads/sites/12/2017/08/Roberts_Reade.jpg",
+            img: "images/RR.jpg",
             research: "Research in the Roberts Laboratory examines the genetics basis of adaptation and speciation, with focus on sex determination and sex differences, and their interaction with complex traits such as dietary adaptation and behavior. Our main model system is the natural adaptive radiation of East African cichlid fish species from Lake Malawi. While our basic biology work is largely guided by evolutionary questions, it holds promise to broadly impact our understanding of vertebrate molecular genetics.",
             website: "https://readerobertslab.weebly.com/",
             expectations: ["Interest in organismal biology, evolution, and genetics", "Ability to spend at least two semesters in the lab", "Motivation/availability for at least 5 hours per week", "Attendance of a weekly, one-hour lab meeting", "Eventual presentation of research project"],
@@ -249,7 +260,7 @@
         },
         mathews: {
             name: "Stephanie Mathews",
-            img: "https://biotech.ncsu.edu/wp-content/uploads/sites/11/2023/07/Mathews_Stephanie.jpg",
+            img: "images/SLM.png",
             research: "Dr. Mathews focuses on two main research categories: Microbial Discovery (Antimicrobial resistance/phage discovery) and Microbiology Education (Understanding impact of teaching practices and student scientific identity).",
             website: "https://biotech.ncsu.edu/people/sklambet/",
             expectations: ["Commitment of at least 9 hours per week", "Discovery projects involve bench and computer work", "Education projects require CITI certification and qualitative research methods learning"],
